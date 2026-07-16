@@ -13,4 +13,6 @@ public class Notification
     public bool IsRead { get; set; }
 
     public DateTime CreatedAt { get; set; }
+
+    public User User { get; set; } = null!;
 }

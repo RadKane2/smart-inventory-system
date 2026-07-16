@@ -13,4 +13,6 @@ public class AuditLog
     public string Description { get; set; } = string.Empty;
 
     public DateTime Date { get; set; }
+
+    public User User { get; set; } = null!;
 }

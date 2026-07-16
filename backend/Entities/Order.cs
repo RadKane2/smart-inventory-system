@@ -12,5 +12,8 @@ public class Order
 
     public DateTime CreatedAt { get; set; }
 
-    public User? User { get; set; }
+    public User User { get; set; } = null!;
+
+    public ICollection<OrderDetail> OrderDetails { get; set; }
+        = new List<OrderDetail>();
 }

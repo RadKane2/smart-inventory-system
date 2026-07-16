@@ -22,5 +22,11 @@ public class Product
 
     public DateTime CreatedAt { get; set; }
 
-    public Category? Category { get; set; }
+    public Category Category { get; set; } = null!;
+
+    public ICollection<OrderDetail> OrderDetails { get; set; }
+        = new List<OrderDetail>();
+
+    public ICollection<InventoryMovement> InventoryMovements { get; set; }
+        = new List<InventoryMovement>();
 }

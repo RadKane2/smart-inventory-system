@@ -18,5 +18,16 @@ public class User
 
     public DateTime? LastLogin { get; set; }
 
-    public Role? Role { get; set; }
+    public Role Role { get; set; } = null!;
+
+    public ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    public ICollection<InventoryMovement> InventoryMovements { get; set; }
+        = new List<InventoryMovement>();
+
+    public ICollection<Notification> Notifications { get; set; }
+        = new List<Notification>();
+
+    public ICollection<AuditLog> AuditLogs { get; set; }
+        = new List<AuditLog>();
 }
