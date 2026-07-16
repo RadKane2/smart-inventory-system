@@ -8,6 +8,7 @@ C:\Users\ARIOSVE\OneDrive - Daimler Truck\Documentos\Evidence portfolio\smart-in
 C:\Users\ARIOSVE\OneDrive - Daimler Truck\Documentos\Evidence portfolio\smart-inventory-system\backend\bin\Debug\net10.0\backend.pdb
 C:\Users\ARIOSVE\OneDrive - Daimler Truck\Documentos\Evidence portfolio\smart-inventory-system\backend\bin\Debug\net10.0\Azure.Core.dll
 C:\Users\ARIOSVE\OneDrive - Daimler Truck\Documentos\Evidence portfolio\smart-inventory-system\backend\bin\Debug\net10.0\Azure.Identity.dll
+C:\Users\ARIOSVE\OneDrive - Daimler Truck\Documentos\Evidence portfolio\smart-inventory-system\backend\bin\Debug\net10.0\BCrypt-Net-Next.dll
 C:\Users\ARIOSVE\OneDrive - Daimler Truck\Documentos\Evidence portfolio\smart-inventory-system\backend\bin\Debug\net10.0\Humanizer.dll
 C:\Users\ARIOSVE\OneDrive - Daimler Truck\Documentos\Evidence portfolio\smart-inventory-system\backend\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\ARIOSVE\OneDrive - Daimler Truck\Documentos\Evidence portfolio\smart-inventory-system\backend\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll

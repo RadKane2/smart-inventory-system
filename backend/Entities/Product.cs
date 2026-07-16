@@ -21,4 +21,6 @@ public class Product
     public string Status { get; set; } = string.Empty;
 
     public DateTime CreatedAt { get; set; }
+
+    public Category? Category { get; set; }
 }

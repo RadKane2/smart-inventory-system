@@ -11,4 +11,6 @@ public class Order
     public string Status { get; set; } = string.Empty;
 
     public DateTime CreatedAt { get; set; }
+
+    public User? User { get; set; }
 }
