@@ -99,6 +99,8 @@ erDiagram
         string PasswordHash
         int RoleId FK
         string Status
+        DATETIME CreatedAt
+        DATETIME LastLogin
     }
 
     Products {
@@ -108,6 +110,9 @@ erDiagram
         decimal Price
         int Stock
         int MinimumStock
+        VARCHAR(500) ImageUrl
+        string Status
+        DATETIME CreatedAt
     }
 
     Orders {
@@ -115,6 +120,8 @@ erDiagram
         int UserId FK
         decimal Total
         string Status
+        DATETIME CreatedAt
+        int OrderNumber
     }
 
     OrderDetails {
@@ -145,6 +152,8 @@ erDiagram
         int UserId FK
         string Action
         string Module
+        CURRENT_DATE Date
+        string Description
     }
 
     Roles ||--o{ Users : has
