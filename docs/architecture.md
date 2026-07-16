@@ -69,3 +69,18 @@ SQL Server Database
 - User Actions
 - Inventory Changes
 - Product Changes
+
+## Frontend Technologies
+
+- React
+- TypeScript
+- Tailwind CSS
+- React Router
+- Axios
+
+## Backend Technologies
+
+- ASP.NET Core Web API
+- Entity Framework Core
+- JWT Authentication
+- SignalR
