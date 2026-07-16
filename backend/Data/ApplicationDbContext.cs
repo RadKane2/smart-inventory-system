@@ -86,5 +86,8 @@ public class ApplicationDbContext : DbContext
             .WithMany(user => user.AuditLogs)
             .HasForeignKey(log => log.UserId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<InventoryMovement>()
+            .HasKey(movement => movement.MovementId);    
     }
 }
