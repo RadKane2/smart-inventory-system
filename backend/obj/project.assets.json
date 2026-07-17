@@ -3264,11 +3264,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ARIOSVE\\OneDrive - Daimler Truck\\Documentos\\Evidence portfolio\\smart-inventory-system\\backend\\backend.csproj",
+      "projectUniqueName": "C:\\Projects\\smart-inventory-system\\backend\\backend.csproj",
       "projectName": "backend",
-      "projectPath": "C:\\Users\\ARIOSVE\\OneDrive - Daimler Truck\\Documentos\\Evidence portfolio\\smart-inventory-system\\backend\\backend.csproj",
+      "projectPath": "C:\\Projects\\smart-inventory-system\\backend\\backend.csproj",
       "packagesPath": "C:\\Users\\ARIOSVE\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ARIOSVE\\OneDrive - Daimler Truck\\Documentos\\Evidence portfolio\\smart-inventory-system\\backend\\obj\\",
+      "outputPath": "C:\\Projects\\smart-inventory-system\\backend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ARIOSVE\\AppData\\Roaming\\NuGet\\NuGet.Config"

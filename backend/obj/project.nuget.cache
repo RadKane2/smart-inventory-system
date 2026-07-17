@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "EYwgzEdjM+w=",
+  "dgSpecHash": "HJXaYN2u7Ps=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ARIOSVE\\OneDrive - Daimler Truck\\Documentos\\Evidence portfolio\\smart-inventory-system\\backend\\backend.csproj",
+  "projectFilePath": "C:\\Projects\\smart-inventory-system\\backend\\backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ARIOSVE\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\ARIOSVE\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
@@ -61,9 +61,9 @@
       "code": "NU1903",
       "level": "Warning",
       "message": "El paquete \"Microsoft.OpenApi\" 2.0.0 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-v5pm-xwqc-g5wc",
-      "projectPath": "C:\\Users\\ARIOSVE\\OneDrive - Daimler Truck\\Documentos\\Evidence portfolio\\smart-inventory-system\\backend\\backend.csproj",
+      "projectPath": "C:\\Projects\\smart-inventory-system\\backend\\backend.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\ARIOSVE\\OneDrive - Daimler Truck\\Documentos\\Evidence portfolio\\smart-inventory-system\\backend\\backend.csproj",
+      "filePath": "C:\\Projects\\smart-inventory-system\\backend\\backend.csproj",
       "libraryId": "Microsoft.OpenApi",
       "targetGraphs": [
         "net10.0"
