@@ -5,8 +5,8 @@ POST {{baseUrl}}/api/auth/register
 Content-Type: application/json
 
 {
-  "name": "Test Customer 2",
-  "email": "customer2@test.com",
+  "name": "Test Customer",
+  "email": "customer@test.com",
   "password": "TestPassword123!"
 }
 
@@ -18,3 +18,51 @@ Content-Type: application/json
   "email": "customer2@test.com",
   "password": "TestPassword123!"
 }
+
+@baseUrl = http://localhost:5093
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCBDdXN0b21lciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImN1c3RvbWVyQHRlc3QuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3ODQzMTQ0OTEsImlzcyI6IlNtYXJ0SW52ZW50b3J5QVBJIiwiYXVkIjoiU21hcnRJbnZlbnRvcnlDbGllbnQifQ.nUoaDcMnJhd0-2muZ5x6pB32M1EiXiVu3GpHBYWANMY
+
+### Endpoint para cualquier usuario autenticado
+GET {{baseUrl}}/api/test/authenticated
+Authorization: Bearer {{token}}
+
+### Endpoint exclusivo para Customer
+GET {{baseUrl}}/api/test/customer
+Authorization: Bearer {{token}}
+
+### Endpoint exclusivo para Admin
+GET {{baseUrl}}/api/test/admin
+Authorization: Bearer {{token}}
+
+@baseUrl = http://localhost:5093
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCBDdXN0b21lciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImN1c3RvbWVyQHRlc3QuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3ODQzMTQ0OTEsImlzcyI6IlNtYXJ0SW52ZW50b3J5QVBJIiwiYXVkIjoiU21hcnRJbnZlbnRvcnlDbGllbnQifQ.nUoaDcMnJhd0-2muZ5x6pB32M1EiXiVu3GpHBYWANMY
+
+### Get all categories - Public
+GET {{baseUrl}}/api/categories
+
+### Get category by ID - Public
+GET {{baseUrl}}/api/categories/1
+
+### Create category - Admin
+POST {{baseUrl}}/api/categories
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Electronics",
+  "description": "Electronic devices and accessories."
+}
+
+### Update category - Admin
+PUT {{baseUrl}}/api/categories/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Electronic Products",
+  "description": "Computers, devices and electronic accessories."
+}
+
+### Delete category - Admin
+DELETE {{baseUrl}}/api/categories/1
+Authorization: Bearer {{adminToken}}
