@@ -79,3 +79,52 @@ Content-Type: application/json
   "name": "Electronics",
   "description": "Electronic products and accessories."
 }
+
+### Get public products
+GET {{baseUrl}}/api/products
+
+### Search products
+GET {{baseUrl}}/api/products?search=mouse
+
+### Filter products by category
+GET {{baseUrl}}/api/products?categoryId=1
+
+### Create product - Admin
+POST {{baseUrl}}/api/products
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Wireless Mouse",
+  "description": "Ergonomic wireless mouse.",
+  "price": 599.90,
+  "minimumStock": 5,
+  "categoryId": 1,
+  "imageUrl": "https://example.com/images/mouse.jpg"
+}
+
+### Get product by ID
+GET {{baseUrl}}/api/products/1
+
+### Update product - Admin
+PUT {{baseUrl}}/api/products/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Wireless Mouse Pro",
+  "description": "Ergonomic wireless mouse with rechargeable battery.",
+  "price": 749.90,
+  "minimumStock": 5,
+  "categoryId": 1,
+  "imageUrl": "https://example.com/images/mouse-pro.jpg",
+  "status": "Active"
+}
+
+### Get all products including inactive - Admin
+GET {{baseUrl}}/api/products/admin
+Authorization: Bearer {{adminToken}}
+
+### Deactivate product - Admin
+DELETE {{baseUrl}}/api/products/1
+Authorization: Bearer {{adminToken}}
