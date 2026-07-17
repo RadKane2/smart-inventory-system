@@ -33,6 +33,24 @@ public class ApplicationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<Role>().HasData(
+            new Role
+            {
+                RoleId = 1,
+                RoleName = "Admin"
+            },
+            new Role
+            {
+                RoleId = 2,
+                RoleName = "Employee"
+            },
+            new Role
+            {
+                RoleId = 3,
+                RoleName = "Customer"
+            }
+        );
+
         modelBuilder.Entity<User>()
             .HasIndex(user => user.Email)
             .IsUnique();
