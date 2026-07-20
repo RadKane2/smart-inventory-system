@@ -8,10 +8,14 @@ namespace backend.Services;
 public class InventoryService
 {
     private readonly ApplicationDbContext _context;
+    private readonly AuditService _auditService;
 
-    public InventoryService(ApplicationDbContext context)
+    public InventoryService(
+        ApplicationDbContext context,
+        AuditService auditService)
     {
         _context = context;
+        _auditService = auditService;
     }
 
     public async Task<List<InventoryMovementResponseDto>> GetAllAsync(
@@ -100,7 +104,9 @@ public class InventoryService
         }
 
         var userExists = await _context.Users
-            .AnyAsync(user => user.UserId == userId);
+            .AnyAsync(user =>
+                user.UserId == userId
+            );
 
         if (!userExists)
         {
@@ -117,6 +123,7 @@ public class InventoryService
                 StringComparison.OrdinalIgnoreCase))
         {
             normalizedType = "Entry";
+
             product.Stock += request.Quantity;
         }
         else if (string.Equals(
@@ -169,7 +176,7 @@ public class InventoryService
                     .ToListAsync();
 
             foreach (var recipientUserId
-                    in notificationRecipients)
+                     in notificationRecipients)
             {
                 var notificationExists =
                     await _context.Notifications
@@ -206,7 +213,35 @@ public class InventoryService
             }
         }
 
+        // Guarda la actualización de stock,
+        // el movimiento y las notificaciones.
         await _context.SaveChangesAsync();
+
+        // Registra la operación en AuditLogs.
+        if (normalizedType == "Entry")
+        {
+            await _auditService.CreateLogAsync(
+                userId,
+                "InventoryEntry",
+                "Product",
+                product.ProductId,
+                $"Added {request.Quantity} units to product " +
+                $"'{product.Name}'. Stock after movement: " +
+                $"{product.Stock}."
+            );
+        }
+        else
+        {
+            await _auditService.CreateLogAsync(
+                userId,
+                "InventoryExit",
+                "Product",
+                product.ProductId,
+                $"Removed {request.Quantity} units from product " +
+                $"'{product.Name}'. Stock after movement: " +
+                $"{product.Stock}."
+            );
+        }
 
         return await GetByIdAsync(movement.MovementId)
             ?? throw new InvalidOperationException(

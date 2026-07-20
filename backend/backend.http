@@ -138,7 +138,7 @@ Content-Type: application/json
 }
 
 @baseUrl = http://localhost:5093
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCBDdXN0b21lciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImN1c3RvbWVyQHRlc3QuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3ODQ1Njk5MDgsImlzcyI6IlNtYXJ0SW52ZW50b3J5QVBJIiwiYXVkIjoiU21hcnRJbnZlbnRvcnlDbGllbnQifQ.TdN_OAWhbZ0cgC3gzrsdoT-gyrvpS35ZPdZp4RDU4BY
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCBDdXN0b21lciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImN1c3RvbWVyQHRlc3QuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3ODQ1NzA1MDUsImlzcyI6IlNtYXJ0SW52ZW50b3J5QVBJIiwiYXVkIjoiU21hcnRJbnZlbnRvcnlDbGllbnQifQ.Wz3xYyUWIs8sX0lO18o22tKNBFLu1LAXyJQeepJN3zY
 
 ### Get all notifications
 GET {{baseUrl}}/api/notifications
@@ -211,6 +211,29 @@ Content-Type: application/json
 
 DELETE {{baseUrl}}/api/products/1
 Authorization: Bearer {{adminToken}}
+
+GET {{baseUrl}}/api/auditlogs
+Authorization: Bearer {{adminToken}}
+
+POST {{baseUrl}}/api/inventory/movements
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "type": "Entry",
+  "quantity": 10
+}
+
+POST {{baseUrl}}/api/inventory/movements
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "type": "Exit",
+  "quantity": 4
+}
 
 GET {{baseUrl}}/api/auditlogs
 Authorization: Bearer {{adminToken}}
