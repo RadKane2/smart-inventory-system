@@ -325,6 +325,151 @@ public class OrderService
         }
     }
 
+    public async Task<OrderResponseDto?> UpdateStatusAsync(
+        int orderId,
+        UpdateOrderStatusDto request,
+        int userId)
+    {
+        var order = await _context.Orders
+            .Include(order => order.OrderDetails)
+            .ThenInclude(detail => detail.Product)
+            .FirstOrDefaultAsync(order =>
+                order.OrderId == orderId
+            );
+
+        if (order is null)
+        {
+            return null;
+        }
+
+        var requestedStatus = NormalizeStatus(request.Status);
+
+        ValidateStatusTransition(
+            order.Status,
+            requestedStatus
+        );
+
+        await using var transaction =
+            await _context.Database.BeginTransactionAsync();
+
+        try
+        {
+            if (requestedStatus == "Cancelled")
+            {
+                foreach (var detail in order.OrderDetails)
+                {
+                    detail.Product.Stock += detail.Quantity;
+
+                    var movement = new InventoryMovement
+                    {
+                        ProductId = detail.ProductId,
+                        UserId = userId,
+                        Type = "Entry",
+                        Quantity = detail.Quantity,
+                        StockAfterMovement =
+                            detail.Product.Stock,
+                        Date = DateTime.UtcNow
+                    };
+
+                    _context.InventoryMovements.Add(movement);
+                }
+            }
+
+            var previousStatus = order.Status;
+
+            order.Status = requestedStatus;
+
+            await _context.SaveChangesAsync();
+
+            await _auditService.CreateLogAsync(
+                userId,
+                "UpdateStatus",
+                "Order",
+                order.OrderId,
+                $"Changed order #{order.OrderId} status " +
+                $"from '{previousStatus}' to " +
+                $"'{requestedStatus}'."
+            );
+
+            await transaction.CommitAsync();
+
+            return await GetByIdInternalAsync(order.OrderId)
+                ?? throw new InvalidOperationException(
+                    "The updated order could not be retrieved."
+                );
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+    private static string NormalizeStatus(string status)
+    {
+        var normalizedStatus = status
+            .Trim()
+            .ToLowerInvariant();
+
+        return normalizedStatus switch
+        {
+            "pending" => "Pending",
+            "processing" => "Processing",
+            "shipped" => "Shipped",
+            "delivered" => "Delivered",
+            "cancelled" => "Cancelled",
+
+            _ => throw new ArgumentException(
+                "The order status is invalid."
+            )
+        };
+    }
+
+    private static void ValidateStatusTransition(
+        string currentStatus,
+        string requestedStatus)
+    {
+        if (currentStatus == requestedStatus)
+        {
+            throw new InvalidOperationException(
+                $"The order is already in status " +
+                $"'{currentStatus}'."
+            );
+        }
+
+        var transitionIsValid =
+            currentStatus switch
+            {
+                "Pending" =>
+                    requestedStatus is
+                        "Processing" or
+                        "Cancelled",
+
+                "Processing" =>
+                    requestedStatus is
+                        "Shipped" or
+                        "Cancelled",
+
+                "Shipped" =>
+                    requestedStatus == "Delivered",
+
+                "Delivered" => false,
+
+                "Cancelled" => false,
+
+                _ => false
+            };
+
+        if (!transitionIsValid)
+        {
+            throw new InvalidOperationException(
+                $"The order cannot change from " +
+                $"'{currentStatus}' to " +
+                $"'{requestedStatus}'."
+            );
+        }
+    }
+
     private async Task CreateLowStockNotificationsAsync(
         List<Product> products)
     {
