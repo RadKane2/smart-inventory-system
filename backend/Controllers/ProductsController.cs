@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using backend.DTOs.Products;
 using backend.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -36,7 +37,9 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult<ProductResponseDto>> GetById(
         int productId)
     {
-        var product = await _productService.GetByIdAsync(productId);
+        var product = await _productService.GetByIdAsync(
+            productId
+        );
 
         if (product is null)
         {
@@ -51,9 +54,10 @@ public class ProductsController : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpGet("admin")]
-    public async Task<ActionResult<List<ProductResponseDto>>> GetAllAdmin(
-        [FromQuery] string? search,
-        [FromQuery] int? categoryId)
+    public async Task<ActionResult<List<ProductResponseDto>>>
+        GetAllAdmin(
+            [FromQuery] string? search,
+            [FromQuery] int? categoryId)
     {
         var products = await _productService.GetAllAsync(
             search,
@@ -69,13 +73,28 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult<ProductResponseDto>> Create(
         CreateProductDto request)
     {
+        if (!TryGetAuthenticatedUserId(out var userId))
+        {
+            return Unauthorized(new
+            {
+                message =
+                    "The authenticated user identifier is invalid."
+            });
+        }
+
         try
         {
-            var product = await _productService.CreateAsync(request);
+            var product = await _productService.CreateAsync(
+                request,
+                userId
+            );
 
             return CreatedAtAction(
                 nameof(GetById),
-                new { productId = product.ProductId },
+                new
+                {
+                    productId = product.ProductId
+                },
                 product
             );
         }
@@ -101,11 +120,21 @@ public class ProductsController : ControllerBase
         int productId,
         UpdateProductDto request)
     {
+        if (!TryGetAuthenticatedUserId(out var userId))
+        {
+            return Unauthorized(new
+            {
+                message =
+                    "The authenticated user identifier is invalid."
+            });
+        }
+
         try
         {
             var product = await _productService.UpdateAsync(
                 productId,
-                request
+                request,
+                userId
             );
 
             if (product is null)
@@ -143,10 +172,23 @@ public class ProductsController : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpDelete("{productId:int}")]
-    public async Task<IActionResult> Deactivate(int productId)
+    public async Task<IActionResult> Deactivate(
+        int productId)
     {
+        if (!TryGetAuthenticatedUserId(out var userId))
+        {
+            return Unauthorized(new
+            {
+                message =
+                    "The authenticated user identifier is invalid."
+            });
+        }
+
         var deactivated =
-            await _productService.DeactivateAsync(productId);
+            await _productService.DeactivateAsync(
+                productId,
+                userId
+            );
 
         if (!deactivated)
         {
@@ -157,5 +199,14 @@ public class ProductsController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    private bool TryGetAuthenticatedUserId(out int userId)
+    {
+        var userIdValue = User.FindFirstValue(
+            ClaimTypes.NameIdentifier
+        );
+
+        return int.TryParse(userIdValue, out userId);
     }
 }

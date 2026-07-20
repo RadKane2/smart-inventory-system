@@ -138,7 +138,7 @@ Content-Type: application/json
 }
 
 @baseUrl = http://localhost:5093
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCBDdXN0b21lciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImN1c3RvbWVyQHRlc3QuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3ODQ1Njg1OTgsImlzcyI6IlNtYXJ0SW52ZW50b3J5QVBJIiwiYXVkIjoiU21hcnRJbnZlbnRvcnlDbGllbnQifQ.9G0Io0HXEss9Wkn4CSkYyr3YCZ6GLlLsyMqx06xWfRc
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCBDdXN0b21lciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImN1c3RvbWVyQHRlc3QuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3ODQ1Njk5MDgsImlzcyI6IlNtYXJ0SW52ZW50b3J5QVBJIiwiYXVkIjoiU21hcnRJbnZlbnRvcnlDbGllbnQifQ.TdN_OAWhbZ0cgC3gzrsdoT-gyrvpS35ZPdZp4RDU4BY
 
 ### Get all notifications
 GET {{baseUrl}}/api/notifications
@@ -177,6 +177,39 @@ GET {{baseUrl}}/api/auditlogs
 Authorization: Bearer {{adminToken}}
 
 DELETE {{baseUrl}}/api/categories/1002
+Authorization: Bearer {{adminToken}}
+
+GET {{baseUrl}}/api/auditlogs
+Authorization: Bearer {{adminToken}}
+
+POST {{baseUrl}}/api/products
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Keyboard Audit Test",
+  "description": "Product created to validate audit logs.",
+  "price": 899.90,
+  "minimumStock": 5,
+  "categoryId": 1003,
+  "imageUrl": "https://example.com/keyboard.jpg"
+}
+
+PUT {{baseUrl}}/api/products/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Keyboard Audit Test Pro",
+  "description": "Updated product for audit testing.",
+  "price": 999.90,
+  "minimumStock": 4,
+  "categoryId": 1003,
+  "imageUrl": "https://example.com/keyboard-pro.jpg",
+  "status": "Active"
+}
+
+DELETE {{baseUrl}}/api/products/1
 Authorization: Bearer {{adminToken}}
 
 GET {{baseUrl}}/api/auditlogs

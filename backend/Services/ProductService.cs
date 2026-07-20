@@ -8,10 +8,14 @@ namespace backend.Services;
 public class ProductService
 {
     private readonly ApplicationDbContext _context;
+    private readonly AuditService _auditService;
 
-    public ProductService(ApplicationDbContext context)
+    public ProductService(
+        ApplicationDbContext context,
+        AuditService auditService)
     {
         _context = context;
+        _auditService = auditService;
     }
 
     public async Task<List<ProductResponseDto>> GetAllAsync(
@@ -33,7 +37,9 @@ public class ProductService
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            var normalizedSearch = search.Trim().ToLower();
+            var normalizedSearch = search
+                .Trim()
+                .ToLower();
 
             query = query.Where(product =>
                 product.Name.ToLower().Contains(normalizedSearch) ||
@@ -97,7 +103,8 @@ public class ProductService
     }
 
     public async Task<ProductResponseDto> CreateAsync(
-        CreateProductDto request)
+        CreateProductDto request,
+        int userId)
     {
         var categoryExists = await _context.Categories
             .AnyAsync(category =>
@@ -143,6 +150,14 @@ public class ProductService
 
         await _context.SaveChangesAsync();
 
+        await _auditService.CreateLogAsync(
+            userId,
+            "Create",
+            "Product",
+            product.ProductId,
+            $"Created product '{product.Name}'."
+        );
+
         return await GetByIdAsync(product.ProductId)
             ?? throw new InvalidOperationException(
                 "The product could not be retrieved."
@@ -151,7 +166,8 @@ public class ProductService
 
     public async Task<ProductResponseDto?> UpdateAsync(
         int productId,
-        UpdateProductDto request)
+        UpdateProductDto request,
+        int userId)
     {
         var product = await _context.Products
             .FirstOrDefaultAsync(product =>
@@ -193,13 +209,26 @@ public class ProductService
 
         var normalizedStatus = request.Status.Trim();
 
-        if (normalizedStatus != "Active" &&
-            normalizedStatus != "Inactive")
+        if (!string.Equals(
+                normalizedStatus,
+                "Active",
+                StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(
+                normalizedStatus,
+                "Inactive",
+                StringComparison.OrdinalIgnoreCase))
         {
             throw new ArgumentException(
                 "Status must be Active or Inactive."
             );
         }
+
+        normalizedStatus = string.Equals(
+            normalizedStatus,
+            "Active",
+            StringComparison.OrdinalIgnoreCase)
+                ? "Active"
+                : "Inactive";
 
         product.Name = normalizedName;
         product.Description = request.Description.Trim();
@@ -211,10 +240,20 @@ public class ProductService
 
         await _context.SaveChangesAsync();
 
+        await _auditService.CreateLogAsync(
+            userId,
+            "Update",
+            "Product",
+            product.ProductId,
+            $"Updated product '{product.Name}'."
+        );
+
         return await GetByIdAsync(product.ProductId);
     }
 
-    public async Task<bool> DeactivateAsync(int productId)
+    public async Task<bool> DeactivateAsync(
+        int productId,
+        int userId)
     {
         var product = await _context.Products
             .FirstOrDefaultAsync(product =>
@@ -229,6 +268,14 @@ public class ProductService
         product.Status = "Inactive";
 
         await _context.SaveChangesAsync();
+
+        await _auditService.CreateLogAsync(
+            userId,
+            "Deactivate",
+            "Product",
+            product.ProductId,
+            $"Deactivated product '{product.Name}'."
+        );
 
         return true;
     }
