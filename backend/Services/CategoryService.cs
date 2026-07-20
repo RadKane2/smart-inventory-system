@@ -8,10 +8,14 @@ namespace backend.Services;
 public class CategoryService
 {
     private readonly ApplicationDbContext _context;
+    private readonly AuditService _auditService;
 
-    public CategoryService(ApplicationDbContext context)
+    public CategoryService(
+        ApplicationDbContext context,
+        AuditService auditService)
     {
         _context = context;
+        _auditService = auditService;
     }
 
     public async Task<List<CategoryResponseDto>> GetAllAsync()
@@ -43,20 +47,20 @@ public class CategoryService
     }
 
     public async Task<CategoryResponseDto> CreateAsync(
-        CreateCategoryDto request)
+        CreateCategoryDto request,
+        int userId)
     {
         var normalizedName = request.Name.Trim();
 
         var categoryExists = await _context.Categories
             .AnyAsync(category =>
-                category.Name.ToLower() == normalizedName.ToLower()
-            );
+                category.Name.ToLower() ==
+                normalizedName.ToLower());
 
         if (categoryExists)
         {
             throw new InvalidOperationException(
-                "A category with this name already exists."
-            );
+                "A category with this name already exists.");
         }
 
         var category = new Category
@@ -69,17 +73,26 @@ public class CategoryService
 
         await _context.SaveChangesAsync();
 
+        await _auditService.CreateLogAsync(
+            userId,
+            "Create",
+            "Category",
+            category.CategoryId,
+            $"Created category '{category.Name}'."
+        );
+
         return MapToResponse(category);
     }
 
     public async Task<CategoryResponseDto?> UpdateAsync(
         int categoryId,
-        UpdateCategoryDto request)
+        UpdateCategoryDto request,
+        int userId)
+
     {
         var category = await _context.Categories
             .FirstOrDefaultAsync(category =>
-                category.CategoryId == categoryId
-            );
+                category.CategoryId == categoryId);
 
         if (category is null)
         {
@@ -92,14 +105,12 @@ public class CategoryService
             .AnyAsync(existingCategory =>
                 existingCategory.CategoryId != categoryId &&
                 existingCategory.Name.ToLower() ==
-                normalizedName.ToLower()
-            );
+                normalizedName.ToLower());
 
         if (categoryExists)
         {
             throw new InvalidOperationException(
-                "A category with this name already exists."
-            );
+                "A category with this name already exists.");
         }
 
         category.Name = normalizedName;
@@ -107,16 +118,25 @@ public class CategoryService
 
         await _context.SaveChangesAsync();
 
+        await _auditService.CreateLogAsync(
+            userId,
+            "Update",
+            "Category",
+            category.CategoryId,
+            $"Updated category '{category.Name}'."
+        );
+
         return MapToResponse(category);
     }
 
-    public async Task<bool> DeleteAsync(int categoryId)
+    public async Task<bool> DeleteAsync(
+        int categoryId,
+        int userId)
     {
         var category = await _context.Categories
             .Include(category => category.Products)
             .FirstOrDefaultAsync(category =>
-                category.CategoryId == categoryId
-            );
+                category.CategoryId == categoryId);
 
         if (category is null)
         {
@@ -126,13 +146,26 @@ public class CategoryService
         if (category.Products.Count > 0)
         {
             throw new InvalidOperationException(
-                "The category cannot be deleted because it contains products."
-            );
+                "The category cannot be deleted because it contains products.");
         }
+
+        // Guardamos estos datos antes de eliminar la categoría.
+        var deletedCategoryId = category.CategoryId;
+        var deletedCategoryName = category.Name;
 
         _context.Categories.Remove(category);
 
+        // Primero se elimina la categoría en SQL Server.
         await _context.SaveChangesAsync();
+
+        // Después se registra quién eliminó la categoría.
+        await _auditService.CreateLogAsync(
+            userId,
+            "Delete",
+            "Category",
+            deletedCategoryId,
+            $"Deleted category '{deletedCategoryName}'."
+        );
 
         return true;
     }

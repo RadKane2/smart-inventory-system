@@ -1,5 +1,6 @@
 using backend.DTOs.Categories;
 using backend.Services;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -50,7 +51,18 @@ public class CategoriesController : ControllerBase
     {
         try
         {
-            var category = await _categoryService.CreateAsync(request);
+            var userIdValue =
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!int.TryParse(userIdValue, out var userId))
+            {
+                return Unauthorized();
+            }
+
+            var category = await _categoryService.CreateAsync(
+                request,
+                userId
+            );
 
             return CreatedAtAction(
                 nameof(GetById),
@@ -75,10 +87,19 @@ public class CategoriesController : ControllerBase
     {
         try
         {
-            var category = await _categoryService.UpdateAsync(
-                categoryId,
-                request
-            );
+            var userIdValue =
+            User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (!int.TryParse(userIdValue, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var category = await _categoryService.UpdateAsync(
+            categoryId,
+            request,
+            userId
+        );
 
             if (category is null)
             {
@@ -105,7 +126,23 @@ public class CategoriesController : ControllerBase
     {
         try
         {
-            var deleted = await _categoryService.DeleteAsync(categoryId);
+            var userIdValue = User.FindFirstValue(
+                ClaimTypes.NameIdentifier
+            );
+
+            if (!int.TryParse(userIdValue, out var userId))
+            {
+                return Unauthorized(new
+                {
+                    message =
+                        "The authenticated user identifier is invalid."
+                });
+            }
+
+            var deleted = await _categoryService.DeleteAsync(
+                categoryId,
+                userId
+            );
 
             if (!deleted)
             {
