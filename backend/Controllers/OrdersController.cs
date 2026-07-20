@@ -138,6 +138,55 @@ public class OrdersController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin")]
+    [HttpPatch("{orderId:int}/status")]
+    public async Task<ActionResult<OrderResponseDto>> UpdateStatus(
+        int orderId,
+        UpdateOrderStatusDto request)
+    {
+        if (!TryGetAuthenticatedUserId(out var userId))
+        {
+            return Unauthorized(new
+            {
+                message =
+                    "The authenticated user identifier is invalid."
+            });
+        }
+
+        try
+        {
+            var order = await _orderService.UpdateStatusAsync(
+                orderId,
+                request,
+                userId
+            );
+
+            if (order is null)
+            {
+                return NotFound(new
+                {
+                    message = "Order was not found."
+                });
+            }
+
+            return Ok(order);
+        }
+        catch (ArgumentException exception)
+        {
+            return BadRequest(new
+            {
+                message = exception.Message
+            });
+        }
+        catch (InvalidOperationException exception)
+        {
+            return Conflict(new
+            {
+                message = exception.Message
+            });
+        }
+    }
+
     private bool TryGetAuthenticatedUserId(out int userId)
     {
         var userIdValue = User.FindFirstValue(
