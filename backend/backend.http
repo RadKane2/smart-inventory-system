@@ -258,3 +258,35 @@ Content-Type: application/json
 }
 
 @customerToken = @customerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEwMDIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiT3JkZXIgQ3VzdG9tZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJvcmRlcmN1c3RvbWVyQHRlc3QuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQ3VzdG9tZXIiLCJleHAiOjE3ODQ1NzI3NjAsImlzcyI6IlNtYXJ0SW52ZW50b3J5QVBJIiwiYXVkIjoiU21hcnRJbnZlbnRvcnlDbGllbnQifQ.9c0i6rydOQY7e6DLQ48ybzap284qM7Y06OQdrsrKI3o
+
+### Get available products
+GET {{baseUrl}}/api/products
+
+### Add inventory
+POST {{baseUrl}}/api/inventory/movements
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "type": "Entry",
+  "quantity": 20
+}
+
+### Create order as Customer
+POST {{baseUrl}}/api/orders
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 2
+    }
+  ]
+}
+
+### Get my orders
+GET {{baseUrl}}/api/orders/my-orders
+Authorization: Bearer {{customerToken}}
