@@ -128,3 +128,38 @@ Authorization: Bearer {{adminToken}}
 ### Deactivate product - Admin
 DELETE {{baseUrl}}/api/products/1
 Authorization: Bearer {{adminToken}}
+
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "customer@test.com",
+  "password": "TestPassword123!"
+}
+
+@baseUrl = http://localhost:5093
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCBDdXN0b21lciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImN1c3RvbWVyQHRlc3QuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3ODQ1NjQzMjcsImlzcyI6IlNtYXJ0SW52ZW50b3J5QVBJIiwiYXVkIjoiU21hcnRJbnZlbnRvcnlDbGllbnQifQ.shD8xh_SUOPkwRM4RBjMg04qcBAaKWCu3gAguTUZRvA
+
+### Get all notifications
+GET {{baseUrl}}/api/notifications
+Authorization: Bearer {{adminToken}}
+
+### Get unread notifications
+GET {{baseUrl}}/api/notifications?unreadOnly=true
+Authorization: Bearer {{adminToken}}
+
+### Get unread notification count
+GET {{baseUrl}}/api/notifications/unread-count
+Authorization: Bearer {{adminToken}}
+
+### Get notification by ID
+GET {{baseUrl}}/api/notifications/1
+Authorization: Bearer {{adminToken}}
+
+### Mark one notification as read
+PATCH {{baseUrl}}/api/notifications/1/read
+Authorization: Bearer {{adminToken}}
+
+### Mark all notifications as read
+PATCH {{baseUrl}}/api/notifications/read-all
+Authorization: Bearer {{adminToken}}

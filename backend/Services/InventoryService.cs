@@ -156,23 +156,42 @@ public class InventoryService
 
         if (product.Stock <= product.MinimumStock)
         {
-            var unreadNotificationExists =
-                await _context.Notifications.AnyAsync(
-                    notification =>
-                        notification.UserId == userId &&
-                        !notification.IsRead &&
-                        notification.Title ==
-                            "Low stock alert" &&
-                        notification.Message.Contains(
-                            product.Name
+            var notificationRecipients =
+                await _context.Users
+                    .Where(user =>
+                        user.Status == "Active" &&
+                        (
+                            user.Role.RoleName == "Admin" ||
+                            user.Role.RoleName == "Employee"
                         )
-                );
+                    )
+                    .Select(user => user.UserId)
+                    .ToListAsync();
 
-            if (!unreadNotificationExists)
+            foreach (var recipientUserId
+                    in notificationRecipients)
             {
+                var notificationExists =
+                    await _context.Notifications
+                        .AnyAsync(notification =>
+                            notification.UserId ==
+                                recipientUserId &&
+                            !notification.IsRead &&
+                            notification.Title ==
+                                "Low stock alert" &&
+                            notification.Message.Contains(
+                                $"'{product.Name}'"
+                            )
+                        );
+
+                if (notificationExists)
+                {
+                    continue;
+                }
+
                 var notification = new Notification
                 {
-                    UserId = userId,
+                    UserId = recipientUserId,
                     Title = "Low stock alert",
                     Message =
                         $"Product '{product.Name}' has " +
