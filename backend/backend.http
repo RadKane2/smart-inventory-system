@@ -178,3 +178,6 @@ Authorization: Bearer {{adminToken}}
 
 DELETE {{baseUrl}}/api/categories/1002
 Authorization: Bearer {{adminToken}}
+
+GET {{baseUrl}}/api/auditlogs
+Authorization: Bearer {{adminToken}}
