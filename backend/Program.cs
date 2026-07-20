@@ -31,6 +31,7 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<InventoryService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<AuditService>();
+builder.Services.AddScoped<OrderService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"]
     ?? throw new InvalidOperationException(
